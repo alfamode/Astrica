@@ -1,0 +1,7 @@
+node_module/
+./front-end/node_module/
+./front-end/Astrica/node_module/
+./back-end/node_module/
+./back-end/Astrica/node_module/
+./QA/node_module/
+./QA/Astrica/node_module/
