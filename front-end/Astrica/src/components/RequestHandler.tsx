@@ -66,7 +66,11 @@ function buttonRequest(
   outputOfItem += "Changes -> \n";
   for (let i = 0; i < changedAttributeList.length; i++) {
     outputOfItem +=
-      "  " + changedAttributeList[i] + " : " + changes[changedAttributeList[i]] + "\n";
+      "  " +
+      changedAttributeList[i] +
+      " : " +
+      changes[changedAttributeList[i]] +
+      "\n";
   }
   console.log(outputOfItem);
 
@@ -85,6 +89,8 @@ function buttonRequest(
       return crossedButtonRequest(listName, item, changes);
     case "plus":
       return plusButtonRequest(listName, item, changes);
+    case "approve":
+      return approveButtonRequest(listName, item, changes);
   }
 }
 
@@ -157,6 +163,20 @@ export function crossedButtonRequest(
   }
 }
 export function plusButtonRequest(listName: string, item: any, changes: any) {
+  switch (listName) {
+    case "Users":
+      return 1;
+    case "Posts":
+      return 2;
+    case "Comments":
+      return 3;
+  }
+}
+export function approveButtonRequest(
+  listName: string,
+  item: any,
+  changes: any
+) {
   switch (listName) {
     case "Users":
       return 1;

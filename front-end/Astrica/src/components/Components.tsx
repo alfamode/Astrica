@@ -108,20 +108,32 @@ function Components(props: {
     profilePicture: "",
   });
 
+  function setSelectedActionHandler(action: string) {
+    if (selectedAction == "") {
+      setSelectedAction(() => action);
+    } else if (formDisplay == -1) {
+      setSelectedAction(() => action);
+    } else {      
+      if (action != "edit") {
+        setSelectedAction(() => action);
+      } else {
+        setSelectedAction(() => "");
+      }
+    }
+  }
+  function setFormDisplayHandler(index: number, displayOption: number) {
+    if (formDisplay == -1) setFormDisplay(() => displayOption);
+    else if (formDisplay == index) setFormDisplay(() => -1);
+    else setFormDisplay(() => -1);
+  }
   function editButton(listName: string, item: any, index: number) {
     return (
       <button
         className={selectedAction == "edit" ? "btn active" : "btn"}
         onClick={() => {
           buttonRequest("edit", listName, item, { hello: "there" });
-          if (selectedAction == "") {
-            setSelectedAction(() => "edit");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => index);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          setSelectedActionHandler("edit");
+          setFormDisplayHandler(index, index);
         }}
       >
         <img src={editLogo} alt="edit" />
@@ -134,14 +146,8 @@ function Components(props: {
         className={selectedAction == "delete" ? "btn active" : "btn"}
         onClick={() => {
           buttonRequest("delete", listName, item, { hello: "there" });
-          if (selectedAction == "") {
-            setSelectedAction(() => "delete");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => -1);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          setSelectedActionHandler("delete");
+          setFormDisplayHandler(index, -1);
         }}
       >
         <img src={deleteLogo} alt="delete" />
@@ -154,14 +160,8 @@ function Components(props: {
         className={selectedAction == "info" ? "btn active" : "btn"}
         onClick={() => {
           buttonRequest("info", listName, item, { hello: "there" });
-          if (selectedAction == "") {
-            setSelectedAction(() => "info");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => -1);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          setSelectedActionHandler("info");
+          setFormDisplayHandler(index, -1);
         }}
       >
         <img src={infoLogo} alt="info" />
@@ -184,17 +184,35 @@ function Components(props: {
               buttonRequest("check", listName, item, changedCommentInfo);
               break;
           }
-          if (selectedAction == "") {
-            setSelectedAction(() => "check");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => -1);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          // setSelectedActionHandler("check");
+          setFormDisplayHandler(index, -1);
         }}
       >
         <img src={checkLogo} alt="check" />
+      </button>
+    );
+  }
+  function approveButton(listName: string, item: any, index: number) {
+    return (
+      <button
+        className={selectedAction == "approve" ? "btn active" : "btn"}
+        onClick={() => {
+          switch (listName) {
+            case "Users":
+              buttonRequest("approve", listName, item, changedUserInfo);
+              break;
+            case "Posts":
+              buttonRequest("approve", listName, item, changedPostInfo);
+              break;
+            case "Comments":
+              buttonRequest("approve", listName, item, changedCommentInfo);
+              break;
+          }
+          setSelectedActionHandler("approve");
+          setFormDisplayHandler(index, -1);
+        }}
+      >
+        <img src={checkLogo} alt="approve" />
       </button>
     );
   }
@@ -204,14 +222,8 @@ function Components(props: {
         className={selectedAction == "comment" ? "btn active" : "btn"}
         onClick={() => {
           buttonRequest("comment", listName, item, { hello: "there" });
-          if (selectedAction == "") {
-            setSelectedAction(() => "comment");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => -1);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          setSelectedActionHandler("comment");
+          setFormDisplayHandler(index, -1);
         }}
       >
         <img src={commentLogo} alt="comment" />
@@ -224,14 +236,8 @@ function Components(props: {
         className={selectedAction == "crossed" ? "btn active" : "btn"}
         onClick={() => {
           buttonRequest("crossed", listName, item, { hello: "there" });
-          if (selectedAction == "") {
-            setSelectedAction(() => "crossed");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => -1);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          setSelectedActionHandler("crossed");
+          setFormDisplayHandler(index, -1);
         }}
       >
         <img src={crossedLogo} alt="crossed" />
@@ -244,14 +250,8 @@ function Components(props: {
         className={selectedAction == "plus" ? "btn active" : "btn"}
         onClick={() => {
           buttonRequest("plus", listName, item, { hello: "there" });
-          if (selectedAction == "") {
-            setSelectedAction(() => "plus");
-          } else {
-            setSelectedAction(() => "");
-          }
-          if (formDisplay == -1) setFormDisplay(() => -1);
-          else if (formDisplay == index) setFormDisplay(() => -1);
-          else setFormDisplay(() => -1);
+          setSelectedActionHandler("plus");
+          setFormDisplayHandler(index, -1);
         }}
       >
         <img src={plusLogo} alt="plus" />
@@ -284,7 +284,7 @@ function Components(props: {
           <div>
             {editButton(listName, item, index)}
             {deleteButton(listName, item, index)}
-            {checkButton(listName, item, index)}
+            {approveButton(listName, item, index)}
             {crossedButton(listName, item, index)}
             {commentButton(listName, item, index)}
           </div>
@@ -571,7 +571,10 @@ function Components(props: {
       {
         key: 0,
         className: "page-item" + (pageSize == pageSizeList[0] ? " active" : ""),
-        onClick: () => pageSizeHandler(pageSizeList[0]),
+        onClick: () => {
+          pageSizeHandler(pageSizeList[0]);
+          pageSelectionHandler(0);
+        },
       },
       <a className="page-link" href="#">
         {pageSizeList[0]}
@@ -582,7 +585,10 @@ function Components(props: {
       {
         key: 1,
         className: "page-item" + (pageSize == pageSizeList[1] ? " active" : ""),
-        onClick: () => pageSizeHandler(pageSizeList[1]),
+        onClick: () => {
+          pageSizeHandler(pageSizeList[1]);
+          pageSelectionHandler(0);
+        },
       },
       <a className="page-link" href="#">
         {pageSizeList[1]}
@@ -593,7 +599,10 @@ function Components(props: {
       {
         key: 2,
         className: "page-item" + (pageSize == pageSizeList[2] ? " active" : ""),
-        onClick: () => pageSizeHandler(pageSizeList[2]),
+        onClick: () => {
+          pageSizeHandler(pageSizeList[2]);
+          pageSelectionHandler(0);
+        },
       },
       <a className="page-link" href="#">
         {pageSizeList[2]}

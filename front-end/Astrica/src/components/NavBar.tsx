@@ -2,6 +2,7 @@ import { useState } from "react";
 import Posts from "./Posts.tsx";
 import Comments from "./Comments.tsx";
 import Users from "./Users.tsx";
+import Feed from "./Feed.tsx";
 import userLogo from "../assets/user.svg";
 
 function NavBar() {
@@ -30,6 +31,8 @@ function NavBar() {
         return <Posts />;
       case 3:
         return <Comments />;
+      case 4:
+        return <Feed />;
       default:
         return <></>;
     }
@@ -145,6 +148,18 @@ function NavBar() {
               >
                 Comments
               </a>
+              <a
+                className={
+                  activeMenuClass == 4
+                    ? "nav-list active"
+                    : "nav-list text-decoration-none"
+                }
+                onClick={() => setMenuHanlder(4)}
+                href="#"
+                id="navbarComment"
+              >
+                Feed
+              </a>
             </div>
           </div>
         </div>
@@ -156,6 +171,8 @@ function NavBar() {
           ? "Post"
           : activeMenuClass == 3
           ? "Comment"
+          : activeMenuClass == 4
+          ? "Feed"
           : "Welcome!"}
       </h1>
       {activeMenuClass == 0 ? (
